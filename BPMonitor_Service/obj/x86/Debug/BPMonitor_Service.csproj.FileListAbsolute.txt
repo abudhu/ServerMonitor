@@ -20,3 +20,14 @@ Z:\Dropbox\Work\Bridgepoint\Dashboard\BPMonitor_Service\BPMonitor_Service\obj\x8
 Z:\Dropbox\Work\Bridgepoint\Dashboard\BPMonitor_Service\BPMonitor_Service\obj\x86\Debug\GenerateResource.write.1.tlog
 Z:\Dropbox\Work\Bridgepoint\Dashboard\BPMonitor_Service\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.exe
 Z:\Dropbox\Work\Bridgepoint\Dashboard\BPMonitor_Service\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.pdb
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.exe.config
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.exe
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.pdb
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.exe
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.pdb
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\MongoDB.dll
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\ResolveAssemblyReference.cache
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.MonitorService.resources
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.ProjectInstaller.resources
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.read.1.tlog
+Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.write.1.tlog

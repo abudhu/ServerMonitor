@@ -17,6 +17,7 @@ namespace BPMonitor_Service
         public double[] disk_info { get; set; }
         public string disk_read { get; set; }
         public string disk_write { get; set; }
+        public double[] net_info { get; set; }
         public double[] disk_wieght { get; set; }
         public float cpu_weight { get; set; }
         public float mem_weight { get; set; }

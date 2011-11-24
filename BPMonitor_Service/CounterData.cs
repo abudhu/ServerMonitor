@@ -157,44 +157,41 @@ namespace BPMonitor_Service
         // GET NETWORK DATA (http://msdn.microsoft.com/en-us/library/cc768535(v=bts.10).aspx)
         /////////////////////////////////////////////////
 
-        public string[] get_NETData()
+        public double[] get_NETData()
         {
 
-            
+            const int interations = 10;
+            long sumSent = 0;
+            long sumRecieve = 0;
             
             NetworkInterface[] netInterface = NetworkInterface.GetAllNetworkInterfaces();
 
-            string[] netData = new string[netInterface.Length];
+            netInterface = netInterface.Where(d => d.NetworkInterfaceType == NetworkInterfaceType.Ethernet).ToArray();
+
+            double[] netData = new double[netInterface.Length];
             int index = 0;
 
             foreach (NetworkInterface network in netInterface)
             {
                 IPv4InterfaceStatistics interfaceStats = network.GetIPv4Statistics();
 
-                long speed = network.Speed;
-                long bRecieved1 = interfaceStats.BytesReceived;
-                long bSent1 = interfaceStats.BytesSent;
-                System.Threading.Thread.Sleep(1000);
-                long bRecieved2 = interfaceStats.BytesReceived;
-                long bSent2 = interfaceStats.BytesSent;
+                double speed = network.Speed; // bandwidth
 
-                long bRecieved = bRecieved2 - bRecieved1;
-                long bSent = bSent2 - bSent1;
-
-                long bytes = (((bRecieved + bSent) / (1024 * 2)) * 8);
-
-
-                
-                if (drive.IsReady == true && drive.DriveType.Equals(DriveType.Fixed))
+                for (int n = 0; n < interations; n++)
                 {
-
-                    double drivePercent = (((double)(drive.AvailableFreeSpace / 1073741824)) / ((double)(drive.TotalSize / 1073741824)));
-
-                    spaces[index] = (drivePercent);
-                    index++;
+                    sumSent += interfaceStats.BytesSent;
+                    sumRecieve += interfaceStats.BytesReceived;
                 }
+
+                double totalSent = sumSent;
+                double totalReceive = sumRecieve;
+                
+                netData[index] = (((8 * (totalSent + totalReceive)) * 100) / (speed * interations));
+                index++;
+
             }
-            return spaces;
+
+            return netData;
 
         }
 

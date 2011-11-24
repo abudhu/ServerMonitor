@@ -142,6 +142,8 @@ namespace BPMonitor_Service
         {
             CounterData BPM_Data = new CounterData();
             //TextWriter tw = new StreamWriter(@"C:\temp\connection.txt");
+            //Console.WriteLine(BPM_Data.get_NETData());
+            //Console.ReadLine();
 
             var post = new datacollection()
             {
@@ -153,6 +155,7 @@ namespace BPMonitor_Service
                 disk_info = BPM_Data.get_diskINFO(),
                 disk_read = BPM_Data.get_DISKReads(),
                 disk_write = BPM_Data.get_DISKWrites(),
+                net_info = BPM_Data.get_NETData(),
                 disk_wieght = BPM_Data.get_DiskWeight(),
                 cpu_weight = BPM_Data.get_CPUWeight(),
                 mem_weight = BPM_Data.get_MEMWeight(),
@@ -160,7 +163,7 @@ namespace BPMonitor_Service
                 unix_timestamp = BPM_Data.unix_timestamp(),
             };
             collection.Save(post);
-            //Console.WriteLine(BPM_Data.get_DISKWrites());
+            
             //tw.Close();
         }        
     }
