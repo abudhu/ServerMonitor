@@ -59,11 +59,11 @@
       <DependentUpon>CounterData.cs</DependentUpon>
     </Compile>
     <Compile Include="datacollection.cs" />
-    <Compile Include="DBConnection.cs">
+    <Compile Include="DataPost.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DBConnection.Designer.cs">
-      <DependentUpon>DBConnection.cs</DependentUpon>
+    <Compile Include="DataPost.Designer.cs">
+      <DependentUpon>DataPost.cs</DependentUpon>
     </Compile>
     <Compile Include="MonitorService.cs">
       <SubType>Component</SubType>

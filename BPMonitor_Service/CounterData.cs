@@ -27,6 +27,31 @@ namespace BPMonitor_Service
         }
 
         /////////////////////////////////////////////////
+        // GET ALL THE DATA!
+        /////////////////////////////////////////////////
+
+        /////////////////////////////////////////////////
+        // GET UNIX TIMESTAMP
+        /////////////////////////////////////////////////
+
+        public int unix_timestamp()
+        {
+            TimeSpan unix_time = (System.DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (int)unix_time.TotalSeconds;
+        }
+
+        /////////////////////////////////////////////////
+        // GET COMPUTER NAME
+        /////////////////////////////////////////////////
+
+        public string computer_name()
+        {
+            string name = System.Windows.Forms.SystemInformation.ComputerName;
+            return name;
+        }
+
+
+        /////////////////////////////////////////////////
         // GET CPU PERCENTAGE
         /////////////////////////////////////////////////
 
@@ -111,8 +136,6 @@ namespace BPMonitor_Service
                 }
             }
             return spaces;
-
-
         }
 
         /////////////////////////////////////////////////
@@ -166,7 +189,7 @@ namespace BPMonitor_Service
             
             NetworkInterface[] netInterface = NetworkInterface.GetAllNetworkInterfaces();
 
-            netInterface = netInterface.Where(d => d.NetworkInterfaceType == NetworkInterfaceType.Ethernet).ToArray();
+            netInterface = netInterface.Where(n => n.NetworkInterfaceType == NetworkInterfaceType.Ethernet).ToArray();
 
             double[] netData = new double[netInterface.Length];
             int index = 0;
@@ -195,17 +218,14 @@ namespace BPMonitor_Service
 
         }
 
-
-
-
-        // BELOW SECTION IS ALL THE WEIGHT CALCS
-
-
+        /////////////////////////////////////////////////
+        // CALCULATE ALL THE WEIGHTS!
+        /////////////////////////////////////////////////
 
 
 
         /////////////////////////////////////////////////
-        // GET DISK WEIGHT
+        // CALCULATE DISK WEIGHT
         /////////////////////////////////////////////////
 
         public double[] get_DiskWeight()
@@ -229,12 +249,10 @@ namespace BPMonitor_Service
             }
 
             return levels;
-
-
         }
         
         /////////////////////////////////////////////////
-        // GET CPU WEIGHT
+        // CALCULATE CPU WEIGHT
         /////////////////////////////////////////////////
 
         public float get_CPUWeight()
@@ -247,7 +265,7 @@ namespace BPMonitor_Service
         }
 
         /////////////////////////////////////////////////
-        // GET MEMORY WEIGHT
+        // CALCULATE MEMORY WEIGHT
         /////////////////////////////////////////////////
 
         public float get_MEMWeight()
@@ -259,7 +277,7 @@ namespace BPMonitor_Service
         }
 
         /////////////////////////////////////////////////
-        // GET TOTAL WEIGHT
+        // CALCULATE TOTAL WEIGHT
         /////////////////////////////////////////////////
 
         public float get_TotalWeight()
@@ -362,24 +380,5 @@ namespace BPMonitor_Service
             return value;
         }
 
-        /////////////////////////////////////////////////
-        // SET UNIX TIMESTAMP
-        /////////////////////////////////////////////////
-
-        public int unix_timestamp()
-        {
-            TimeSpan unix_time = (System.DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
-            return (int)unix_time.TotalSeconds;
-        }
-
-        /////////////////////////////////////////////////
-        // GET COMPUTER NAME
-        /////////////////////////////////////////////////
-
-        public string computer_name()
-        {
-            string name = System.Windows.Forms.SystemInformation.ComputerName;
-            return name;
-        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BPMonitor_Service
 {
-    partial class DBConnection
+    partial class DataPost
     {
         /// <summary>
         /// Required designer variable.
@@ -32,5 +32,6 @@
         }
 
         #endregion
+
     }
 }
