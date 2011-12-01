@@ -49,24 +49,18 @@ namespace BPMonitor_Service
 
         private static void insertData(IMongoCollection<datacollection> collection)
         {
+
             CounterData BPM_Data = new CounterData();
 
             var post = new datacollection()
             {
                 computer_Name = BPM_Data.computer_name(),
-                cpu_percent = BPM_Data.get_CPU(),
-                available_mem = BPM_Data.get_AvailableMEM(),
-                total_mem = BPM_Data.get_TotalMEM(),
-                mem_percent = BPM_Data.get_PercentageMEM(),
-                disk_info = BPM_Data.get_diskINFO(),
-                disk_read = BPM_Data.get_DISKReads(),
-                disk_write = BPM_Data.get_DISKWrites(),
-                net_info = BPM_Data.get_NETData(),
-                disk_wieght = BPM_Data.get_DiskWeight(),
-                cpu_weight = BPM_Data.get_CPUWeight(),
-                mem_weight = BPM_Data.get_MEMWeight(),
-                total_weight = BPM_Data.get_TotalWeight(),
                 unix_timestamp = BPM_Data.unix_timestamp(),
+                driveWeight = BPM_Data.arrayAlert(BPM_Data.get_DISK(), 512),
+                cpuWeight = BPM_Data.singleAlert(BPM_Data.get_CPU(), 512),
+                memWeight = BPM_Data.singleAlert(BPM_Data.get_MEM(), 512),
+                netData = BPM_Data.arrayAlert(BPM_Data.get_NETData(), 512)
+                
             };
 
             collection.Save(post);

@@ -30,6 +30,7 @@ namespace BPMonitor_Service
         // GET ALL THE DATA!
         /////////////////////////////////////////////////
 
+        
         /////////////////////////////////////////////////
         // GET UNIX TIMESTAMP
         /////////////////////////////////////////////////
@@ -64,94 +65,77 @@ namespace BPMonitor_Service
             System.Threading.Thread.Sleep(1000);
 
             CPUValue = theCPUCounter.NextValue();
+
+            CPUValue = 100 - CPUValue;
             
             return CPUValue;
         }
 
+
         /////////////////////////////////////////////////
-        // GET AVAILABLE MEMORY
+        // GET MEMORY PERCENTAGE
         /////////////////////////////////////////////////
 
-        public float get_AvailableMEM()
+        public double get_MEM()
         {
-            PerformanceCounter theMEMCounter = new PerformanceCounter("Memory", "Available MBytes");
-            
-            float MEMValue = theMEMCounter.NextValue();
-            
+            PerformanceCounter availCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+            Microsoft.VisualBasic.Devices.ComputerInfo VB = new Microsoft.VisualBasic.Devices.ComputerInfo();
+
+            float totalMEM = (VB.TotalPhysicalMemory / 1048576); //This converts the Float +e9 to Megabytes
+
+            double availMEM = availCounter.NextValue();
+
             System.Threading.Thread.Sleep(1000);
 
-            MEMValue = theMEMCounter.NextValue();
-            
-            return MEMValue;
-            
-        }
+            availMEM = availCounter.NextValue();
 
-        /////////////////////////////////////////////////
-        // GET TOTAL PHYSICAL MEMORY
-        /////////////////////////////////////////////////
-
-        public float get_TotalMEM()
-        {
-            Microsoft.VisualBasic.Devices.ComputerInfo VB = new Microsoft.VisualBasic.Devices.ComputerInfo();
-            
-            float TOTALValue = (VB.TotalPhysicalMemory / 1048576); //This converts the Float +e9 to Megabytes
-
-            return TOTALValue;        
-        }
-
-        /////////////////////////////////////////////////
-        // GET PERCENTAGE FREE MEMORY
-        /////////////////////////////////////////////////
-
-        public float get_PercentageMEM()
-        {
-            float percentageMEM = (get_AvailableMEM() / get_TotalMEM());
+            double percentageMEM = (availMEM / totalMEM) * 100;
 
             return percentageMEM;
+
         }
 
         /////////////////////////////////////////////////
-        // GET DRIVE SPACE
+        // GET DISK PERCENTAGE
         /////////////////////////////////////////////////
-                
-        public double[] get_diskINFO()
+        public double[] get_DISK()
         {
-                        
+            const double bytes_per_gigabyte = 1073741824;
+            
             DriveInfo[] drives = DriveInfo.GetDrives();
 
             drives = drives.Where(d => d.DriveType == DriveType.Fixed).ToArray();
+
+            double[] percentageFree = new double[drives.Length];
             
-            double[] spaces = new double[drives.Length];
             int index = 0;
-            
+
             foreach (DriveInfo drive in drives)
             {
-                if (drive.IsReady == true && drive.DriveType.Equals(DriveType.Fixed))
-                {
-                   
-                    double drivePercent = (((double)(drive.AvailableFreeSpace / 1073741824)) / ((double)(drive.TotalSize / 1073741824)));
+                percentageFree[index] = (drive.AvailableFreeSpace / bytes_per_gigabyte) / (drive.TotalSize / bytes_per_gigabyte);
 
-                    spaces[index] = (drivePercent);
-                    index++;
-                }
+                index++;
             }
-            return spaces;
+            
+            return percentageFree;
         }
+        
 
         /////////////////////////////////////////////////
         // GET DISK WRITES
         /////////////////////////////////////////////////
 
-        public string get_DISKWrites()
+        public float get_DISKWrites()
         {
 
             PerformanceCounter theDiskWrite = new PerformanceCounter("PhysicalDisk", "Disk Writes/sec", "_Total");
 
-            string WRITEValue = theDiskWrite.NextValue().ToString();
+            float WRITEValue = theDiskWrite.NextValue();
 
             System.Threading.Thread.Sleep(1000);
 
-            WRITEValue = theDiskWrite.NextValue().ToString();
+            WRITEValue = theDiskWrite.NextValue();
 
             return WRITEValue;
 
@@ -161,16 +145,16 @@ namespace BPMonitor_Service
         // GET DISK READS
         /////////////////////////////////////////////////
 
-        public string get_DISKReads()
+        public float get_DISKReads()
         {
 
             PerformanceCounter theDiskRead = new PerformanceCounter("PhysicalDisk", "Disk Reads/sec", "_Total");
 
-            string READValue = theDiskRead.NextValue().ToString();
+            float READValue = theDiskRead.NextValue();
 
             System.Threading.Thread.Sleep(1000);
 
-            READValue = theDiskRead.NextValue().ToString();
+            READValue = theDiskRead.NextValue();
 
             return READValue;
 
@@ -209,7 +193,10 @@ namespace BPMonitor_Service
                 double totalSent = sumSent;
                 double totalReceive = sumRecieve;
                 
-                netData[index] = (((8 * (totalSent + totalReceive)) * 100) / (speed * interations));
+                double totalUsed = (((8 * (totalSent + totalReceive)) * 100) / (speed * interations));
+                double totalFree = (100 - totalUsed) / 100;
+
+                netData[index] = totalFree;
                 index++;
 
             }
@@ -225,159 +212,25 @@ namespace BPMonitor_Service
 
 
         /////////////////////////////////////////////////
-        // CALCULATE DISK WEIGHT
+        // CALCULATE ARRAY WIEGHTS
         /////////////////////////////////////////////////
 
-        public double[] get_DiskWeight()
+        public double arrayAlert(double[] p, double weight)
         {
-            double[] disks = get_diskINFO();
-            double warn_level = ((Convert.ToDouble(ConfigurationManager.AppSettings["disk_warn"])) / 100);
-            double[] levels = new double[disks.Length];
-            int index = 0;
+            
+            Array.Sort(p);
+            //p[0] is the minimum %free
 
-            foreach(double disk in disks)
-            {
-                if (disk < warn_level)
-                {
-                    levels[index] = 512;
-                }
-                else
-                {
-                    levels[index] = 0;
-                }
-                index++;
-            }
+            return p[0] * weight;
 
-            return levels;
-        }
-        
-        /////////////////////////////////////////////////
-        // CALCULATE CPU WEIGHT
-        /////////////////////////////////////////////////
-
-        public float get_CPUWeight()
-        {
-            float cpuPercent = (get_CPU() / 100);
-            cpuPercent = (1 - cpuPercent);
-            float returnWeight = weight_Value(cpuPercent);
-
-            return returnWeight;
         }
 
-        /////////////////////////////////////////////////
-        // CALCULATE MEMORY WEIGHT
-        /////////////////////////////////////////////////
-
-        public float get_MEMWeight()
+        public double singleAlert(double p, double weight)
         {
-            float memPercent = (get_PercentageMEM());
-            float returnWeight = weight_Value(memPercent);
+            //weight /= 100;
+            p = p / 100;
 
-            return returnWeight;
-        }
-
-        /////////////////////////////////////////////////
-        // CALCULATE TOTAL WEIGHT
-        /////////////////////////////////////////////////
-
-        public float get_TotalWeight()
-        {
-            float memValue = get_MEMWeight();
-            float cpuValue = get_CPUWeight();
-            float totalWeight;
-
-            if (!diskEqual512())
-            {
-                totalWeight = memValue + cpuValue;
-            }
-            else
-            {
-                totalWeight = memValue + cpuValue + 512;
-            }
-            return totalWeight;
-       
-        }
-
-        /////////////////////////////////////////////////
-        // DO DISK EQAUL 512?
-        /////////////////////////////////////////////////
-
-        private bool diskEqual512()
-        {
-            double[] diskWeights = get_DiskWeight();
-
-            int value = Array.BinarySearch(diskWeights, 512);
-
-            if (value > -1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-        /////////////////////////////////////////////////
-        // CALCULATE WEIGHT VALUES
-        /////////////////////////////////////////////////
-
-        public float weight_Value(float value)
-        {
-            if (value > 0.0 && value < .11)
-            {
-                //value = (value * 5120);
-                // This is set to a static value because the variations between 0 and 10% are too annoying to calculate
-                value = 512;
-                return value;
-
-            }
-            else if (value > .10 && value < .21)
-            {
-                value = (value * 2560);
-                return value;
-            }
-            else if (value > .20 && value < .31)
-            {
-                value = (value * 1280);
-                return value;
-            }
-            else if (value > .30 && value < .41)
-            {
-                value = (value * 640);
-                return value;
-            }
-            else if (value > .40 && value < .51)
-            {
-                value = (value * 320);
-                return value;
-            }
-            else if (value > .50 && value < .61)
-            {
-                value = (value * 160);
-                return value;
-            }
-            else if (value > .60 && value < .71)
-            {
-                value = (value * 80);
-                return value;
-            }
-            else if (value > .70 && value < .81)
-            {
-                value = (value * 40);
-                return value;
-            }
-            else if (value > .80 && value < .91)
-            {
-                value = (value * 20);
-                return value;
-            }
-            else if (value > .90 && value < 1)
-            {
-                value = (value * 10);
-                return value;
-            }
-            return value;
+            return p * weight;           
         }
 
     }

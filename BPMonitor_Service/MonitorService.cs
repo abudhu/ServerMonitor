@@ -98,9 +98,10 @@ namespace BPMonitor_Service
                 BPM_EventLog.WriteEntry("Connection Failed: " + m, EventLogEntryType.Error);
 
             }
-            catch (Exception ex)
+            // Gotta Catch Em' All!
+            catch (Exception pokemon)
             {
-                BPM_EventLog.WriteEntry("This Broke: " + ex, EventLogEntryType.Error);
+                BPM_EventLog.WriteEntry("A Wild Error Appears: \r\n" + pokemon + "\r\n It's highly effective!", EventLogEntryType.Error);
             }
             
             

@@ -31,3 +31,14 @@ Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Servic
 Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.ProjectInstaller.resources
 Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.read.1.tlog
 Z:\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.exe.config
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.exe
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.pdb
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.exe
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\BPMonitor_Service.pdb
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\bin\Debug\MongoDB.dll
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.MonitorService.resources
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\BPMonitor_Service.ProjectInstaller.resources
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\abudhu\Dropbox\github\ServerMonitor\BPMonitor_Service\obj\x86\Debug\GenerateResource.write.1.tlog
