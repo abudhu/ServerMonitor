@@ -12,9 +12,10 @@ namespace BPMonitor_Service
         public string computer_Name { get; set; }
         public double unix_timestamp { get; set; }
         public double driveWeight { get; set; }
+        public double iopWeight { get; set; }
         public double cpuWeight { get; set; }
         public double memWeight { get; set; }
-        public double netData { get; set; }
+        public double netWeight { get; set; }
 
     }
 }

@@ -67,8 +67,11 @@ namespace BPMonitor_Service
             CPUValue = theCPUCounter.NextValue();
 
             CPUValue = 100 - CPUValue;
+
+            theCPUCounter.Dispose();
             
             return CPUValue;
+
         }
 
 
@@ -91,6 +94,8 @@ namespace BPMonitor_Service
             availMEM = availCounter.NextValue();
 
             double percentageMEM = (availMEM / totalMEM) * 100;
+
+            availCounter.Dispose();
 
             return percentageMEM;
 
@@ -123,42 +128,28 @@ namespace BPMonitor_Service
         
 
         /////////////////////////////////////////////////
-        // GET DISK WRITES
+        // GET DISK IDLE % (http://msdn.microsoft.com/en-us/library/ms175903.aspx)
         /////////////////////////////////////////////////
 
-        public float get_DISKWrites()
+        public double get_DISKTime()
         {
 
-            PerformanceCounter theDiskWrite = new PerformanceCounter("PhysicalDisk", "Disk Writes/sec", "_Total");
+            PerformanceCounter theTimeValue = new PerformanceCounter("PhysicalDisk", "% Disk Time", "_Total");
 
-            float WRITEValue = theDiskWrite.NextValue();
+            double timeValue = theTimeValue.NextValue();
 
             System.Threading.Thread.Sleep(1000);
 
-            WRITEValue = theDiskWrite.NextValue();
+            timeValue = theTimeValue.NextValue();
 
-            return WRITEValue;
+            timeValue = 100 - timeValue;
 
-        }
+            theTimeValue.Dispose();
 
-        /////////////////////////////////////////////////
-        // GET DISK READS
-        /////////////////////////////////////////////////
-
-        public float get_DISKReads()
-        {
-
-            PerformanceCounter theDiskRead = new PerformanceCounter("PhysicalDisk", "Disk Reads/sec", "_Total");
-
-            float READValue = theDiskRead.NextValue();
-
-            System.Threading.Thread.Sleep(1000);
-
-            READValue = theDiskRead.NextValue();
-
-            return READValue;
+            return timeValue;
 
         }
+
                 
         /////////////////////////////////////////////////
         // GET NETWORK DATA (http://msdn.microsoft.com/en-us/library/cc768535(v=bts.10).aspx)
@@ -167,37 +158,41 @@ namespace BPMonitor_Service
         public double[] get_NETData()
         {
 
-            const int interations = 10;
-            long sumSent = 0;
-            long sumRecieve = 0;
-            
+            //string[] pc = new PerformanceCounterCategory("Network Interface").GetInstanceNames();
+
             NetworkInterface[] netInterface = NetworkInterface.GetAllNetworkInterfaces();
 
             netInterface = netInterface.Where(n => n.NetworkInterfaceType == NetworkInterfaceType.Ethernet).ToArray();
 
             double[] netData = new double[netInterface.Length];
             int index = 0;
+            //return null;
 
             foreach (NetworkInterface network in netInterface)
             {
+
+                string networkName = network.Description.Replace('(', '[');
+                networkName = networkName.Replace(')', ']');
+                networkName = networkName.Replace('/', '_');
+
+                PerformanceCounter theNetValue = new PerformanceCounter("Network Interface", "Bytes Total/sec", networkName);
+
                 IPv4InterfaceStatistics interfaceStats = network.GetIPv4Statistics();
 
                 double speed = network.Speed; // bandwidth
 
-                for (int n = 0; n < interations; n++)
-                {
-                    sumSent += interfaceStats.BytesSent;
-                    sumRecieve += interfaceStats.BytesReceived;
-                }
+                double netValue = theNetValue.NextValue();
 
-                double totalSent = sumSent;
-                double totalReceive = sumRecieve;
-                
-                double totalUsed = (((8 * (totalSent + totalReceive)) * 100) / (speed * interations));
-                double totalFree = (100 - totalUsed) / 100;
+                System.Threading.Thread.Sleep(1000);
 
-                netData[index] = totalFree;
+                netValue = theNetValue.NextValue();
+
+                netValue = (100 - (((netValue * 8) / speed) * 100)) / 100;
+
+                netData[index] = netValue;
                 index++;
+
+                theNetValue.Dispose();
 
             }
 
@@ -224,6 +219,10 @@ namespace BPMonitor_Service
             return p[0] * weight;
 
         }
+
+        /////////////////////////////////////////////////
+        // CALCULATE SINGLE WIEGHTS
+        /////////////////////////////////////////////////
 
         public double singleAlert(double p, double weight)
         {

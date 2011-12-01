@@ -57,9 +57,10 @@ namespace BPMonitor_Service
                 computer_Name = BPM_Data.computer_name(),
                 unix_timestamp = BPM_Data.unix_timestamp(),
                 driveWeight = BPM_Data.arrayAlert(BPM_Data.get_DISK(), 512),
+                iopWeight = BPM_Data.singleAlert(BPM_Data.get_DISKTime(), 512),
                 cpuWeight = BPM_Data.singleAlert(BPM_Data.get_CPU(), 512),
                 memWeight = BPM_Data.singleAlert(BPM_Data.get_MEM(), 512),
-                netData = BPM_Data.arrayAlert(BPM_Data.get_NETData(), 512)
+                netWeight = BPM_Data.arrayAlert(BPM_Data.get_NETData(), 512)
                 
             };
 
