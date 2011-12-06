@@ -29,7 +29,6 @@ namespace BPMonitor_Service
             var BPM_Connection = new Mongo(MonoDB);
 
             BPM_Connection.Connect();
-
             return BPM_Connection;
         }
 
@@ -43,7 +42,8 @@ namespace BPMonitor_Service
 
             insertData(collection);
 
-            conn.Disconnect();
+            conn.Disconnect(); // this is not working!
+            conn.Dispose();
            
         }
 
@@ -51,16 +51,17 @@ namespace BPMonitor_Service
         {
 
             CounterData BPM_Data = new CounterData();
+            double weight = 512;
 
             var post = new datacollection()
             {
                 computer_Name = BPM_Data.computer_name(),
                 unix_timestamp = BPM_Data.unix_timestamp(),
-                driveWeight = BPM_Data.arrayAlert(BPM_Data.get_DISK(), 512),
-                iopWeight = BPM_Data.singleAlert(BPM_Data.get_DISKTime(), 512),
-                cpuWeight = BPM_Data.singleAlert(BPM_Data.get_CPU(), 512),
-                memWeight = BPM_Data.singleAlert(BPM_Data.get_MEM(), 512),
-                netWeight = BPM_Data.arrayAlert(BPM_Data.get_NETData(), 512)
+                driveWeight = BPM_Data.arrayAlert(BPM_Data.get_DISK(), weight),
+                iopWeight = BPM_Data.singleAlert(BPM_Data.get_DISKTime(), weight),
+                cpuWeight = BPM_Data.singleAlert(BPM_Data.get_CPU(), weight),
+                memWeight = BPM_Data.singleAlert(BPM_Data.get_MEM(), weight),
+                netWeight = BPM_Data.arrayAlert(BPM_Data.get_NETData(), weight)
                 
             };
 

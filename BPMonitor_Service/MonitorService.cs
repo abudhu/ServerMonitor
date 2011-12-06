@@ -51,6 +51,7 @@ namespace BPMonitor_Service
 
             BPM_Timer.Enabled = true;
             BPM_Timer.Start();
+
         }
 
         /////////////////////////////////////////////////
@@ -80,32 +81,19 @@ namespace BPMonitor_Service
 
             try
             {
-                mongoPost.makeConnection();
-                BPM_EventLog.WriteEntry("Connection Succeeded");
-
-                try
-                {
-                    mongoPost.postData();
-                    BPM_EventLog.WriteEntry("Post Data Succeeded");
-                }
-                catch (MongoCommandException m)
-                {
-                    BPM_EventLog.WriteEntry("Failed to Post Data: " + m, EventLogEntryType.Error);
-                }
+                mongoPost.postData();
+                BPM_EventLog.WriteEntry("Post Data Succeeded");
             }
-            catch (MongoConnectionException m)
+            catch (MongoCommandException m)
             {
-                BPM_EventLog.WriteEntry("Connection Failed: " + m, EventLogEntryType.Error);
-
+                BPM_EventLog.WriteEntry("Failed to Post Data: \r\n" + m, EventLogEntryType.Error);
             }
+
             // Gotta Catch Em' All!
             catch (Exception pokemon)
             {
                 BPM_EventLog.WriteEntry("A Wild Error Appears: \r\n" + pokemon + "\r\n It's highly effective!", EventLogEntryType.Error);
             }
-            
-            
-
 
         }
     }

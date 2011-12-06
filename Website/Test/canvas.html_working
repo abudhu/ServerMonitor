@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script>
+
+var originalvals = new Array();
+var targetvals = new Array();
+var currentvals = new Array();
+var refreshinterval = 10000;
+var stepsnum = 200;
+var currentstep;
+
+
+		//window.onload = function(){
+		function drawme(ccc, lengths) {
+			//document.getElementById("debug").innerHTML += ccc;
+			var canvas = document.getElementById(ccc);
+			var context = canvas.getContext("2d");
+
+			//var lengths = new Array(58, 78, 70, 86, 99, 50, 70, 56, 44, 85, 45, 80);
+			var theta = 0;
+
+			var w = 200;
+			var h = 200;
+			var ll = w/2;
+
+			context.clearRect(0,0,w,h);
+
+			context.beginPath();
+			context.moveTo(ll, (h/2)-ll);
+			for (l=1; l<lengths.length; l++) {
+				theta = (2*Math.PI) * ( l / lengths.length );
+   				context.lineTo( ll+(ll * Math.sin(theta)), ll-(ll * Math.cos(theta)) );
+			} // for
+			context.lineTo(ll, (h/2)-ll);
+			context.lineWidth = 1;
+			context.strokeStyle = "#000000";
+			context.stroke();
+			context.fillStyle = "#eeeeee";
+			context.fill();
+
+			context.beginPath();
+			context.moveTo(ll, (h/2)-lengths[0]);
+			for (l=1; l<lengths.length; l++) {
+				theta = (2*Math.PI) * ( l / lengths.length );
+   				//context.lineTo( ll+(ll * Math.sin(theta)), ll-(ll * Math.cos(theta)) );
+
+   				context.lineTo( ll+(lengths[l] * Math.sin(theta)), ll-(lengths[l] * Math.cos(theta)) );
+			} // for
+			context.lineTo(ll, (h/2)-lengths[0]);
+			context.lineWidth = 1;
+			context.fillStyle = "#aaaaaa";
+			context.fill();
+
+
+			context.beginPath();
+			context.moveTo(ll, ll);
+			for (l=0; l<lengths.length; l++) {
+				theta = (2*Math.PI) * ( l / lengths.length );
+   				context.lineTo( ll+((lengths[l]-3) * Math.sin(theta)), ll-((lengths[l]-3) * Math.cos(theta)) );
+				context.moveTo(ll, ll);
+			} // for
+			context.lineWidth = 3;
+			context.lineCap = "round";
+			context.strokeStyle = "#999999";
+			context.stroke();
+		};
+
+
+/***********************************************
+* Dynamic Ajax Content- © Dynamic Drive DHTML code library (www.dynamicdrive.com)
+* This notice MUST stay intact for legal use
+* Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+var bustcachevar=1 //bust potential caching of external pages after initial request? (1=yes, 0=no)
+var loadedobjects=""
+var rootdomain="http://"+window.location.hostname
+var bustcacheparameter=""
+
+function ajaxpage(url, cid){
+	containerid = "rdiv"+cid;
+	//document.getElementById("debug").innerHTML += "ajaxpage: "+containerid+"<br>";
+	var page_request = false
+	if (window.XMLHttpRequest) { // if Mozilla, Safari etc
+		page_request = new XMLHttpRequest()
+	} else if (window.ActiveXObject){ // if IE
+		try {
+			page_request = new ActiveXObject("Msxml2.XMLHTTP")
+		} catch (e){
+			try{
+				page_request = new ActiveXObject("Microsoft.XMLHTTP")
+			} catch (e){}
+		}
+	} else {
+		return false
+	}
+	page_request.onreadystatechange=function(){
+		loadpage(page_request, containerid)
+	}
+	if (bustcachevar) {//if bust caching of external page
+		bustcacheparameter=(url.indexOf("?")!=-1)? "&"+new Date().getTime() : "?"+new Date().getTime()
+	} // if
+	page_request.open('GET', url+bustcacheparameter, true)
+	page_request.send(null)
+};
+
+function loadpage(page_request, containerid){
+	if (page_request.readyState == 4 && (page_request.status==200 || window.location.href.indexOf("http")==-1))
+	document.getElementById(containerid).innerHTML=page_request.responseText
+	setDebug(containerid);
+};
+
+function loadobjs(){
+	if (!document.getElementById) return
+
+	for (i=0; i<arguments.length; i++){
+		var file=arguments[i]
+		var fileref=""
+		if (loadedobjects.indexOf(file)==-1){ //Check to see if this object has not already been added to page before proceeding
+			if (file.indexOf(".js")!=-1){ //If object is a js file
+				fileref=document.createElement('script')
+				fileref.setAttribute("type","text/javascript");
+				fileref.setAttribute("src", file);
+			} else if (file.indexOf(".css")!=-1){ //If object is a css file
+				fileref=document.createElement("link")
+				fileref.setAttribute("rel", "stylesheet");
+				fileref.setAttribute("type", "text/css");
+				fileref.setAttribute("href", file);
+			}
+		}
+		if (fileref!=""){
+			document.getElementsByTagName("head").item(0).appendChild(fileref)
+			loadedobjects+=file+" " //Remember this object as being already added to page
+		}
+	}
+};
+
+function setDebug(containerid) {
+	originalvals = targetvals;
+	splitstring = new String(document.getElementById(containerid).innerHTML);
+	targetvals = splitstring.split(',');
+
+	for (i=0; i<targetvals.length; i++) {
+		targetvals[i] = parseFloat(targetvals[i]);
+	} // for
+	currentstep = 0;
+
+}
+
+function drawDebug(cid){
+	//currentvals = originalvals;
+	for (i=0; i<originalvals.length; i++) {
+		currentvals[i] = originalvals[i] + ((targetvals[i]-originalvals[i])/stepsnum*currentstep);
+	} // for
+	drawme("myCanvas"+cid, currentvals);
+	currentstep++;
+
+	if (currentstep >= stepsnum) ajaxpage("random.php", cid);
+
+	document.getElementById('debug').innerHTML = "";
+	document.getElementById('debug').innerHTML += currentstep+"/"+stepsnum+"<br>";
+/*
+	for (i=0; i<targetvals.length; i++) {
+		document.getElementById('debug').innerHTML += "targetvals["+i+"]: "+targetvals[i]+"<br>";
+	} // for
+	for (i=0; i<originalvals.length; i++) {
+		document.getElementById('debug').innerHTML += "originalvals["+i+"]: "+originalvals[i]+"<br>";
+	} // for
+	for (i=0; i<originalvals.length; i++) {
+		document.getElementById('debug').innerHTML += "currentvals["+i+"]: "+currentvals[i]+"<br>";
+	} // for
+*/
+	
+}
+
+function init() {
+	ajaxpage("random.php", 0);
+	setTimeout('ajaxpage("random.php", 0)', 100);
+	setTimeout('ajaxpage("random.php", 1)', 200);
+	setTimeout('ajaxpage("random.php", 1)', 300);
+	setTimeout('ajaxpage("random.php", 2)', 400);
+	setTimeout('ajaxpage("random.php", 2)', 500);
+	setTimeout('setInterval("drawDebug(0)", refreshinterval/stepsnum)', 1000);
+}
+
+	</script>
+</head>
+<body onload='init()'>
+	<canvas id="myCanvas0" width="200" height="200"></canvas>
+	<canvas id="myCanvas1" width="200" height="200"></canvas>
+	<canvas id="myCanvas2" width="200" height="200"></canvas>
+<br>
+<a href='#' onclick='ajaxpage("random.php", 0); return(false);'>random</a>
+	<div id='debug'>this is debug info</div>
+<br>
+	<div id='rdiv0' style='border-left:1px solid #333; padding-left:4px; margin-bottom:4px;'>rdiv0</div>
+	<div id='rdiv1' style='border-left:1px solid #333; padding-left:4px; margin-bottom:4px;'>rdiv1</div>
+	<div id='rdiv2' style='border-left:1px solid #333; padding-left:4px; margin-bottom:4px;'>rdiv2</div>
+</body>
+</html>
